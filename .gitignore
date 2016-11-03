@@ -88,3 +88,8 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Databases
+*.db
+
+*.DS_Store
