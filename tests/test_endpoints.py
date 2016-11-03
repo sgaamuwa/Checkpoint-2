@@ -6,12 +6,12 @@ class EndpointTests(TestBaseCase):
 
     def test_valid_login(self):
         login_data = {"username": "Samuel", "password": "pass123"}
-        response = self.app.post('/auth/login', data=login_data)
+        response = self.app.post('/auth/login', data=login_data, content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
     def test_register_user(self):
         login_data = {"username": "Samuel", "password": "incorrect"}
-        response = self.app.post('/auth/register', data=login_data)
+        response = self.app.post('/auth/register', data=login_data, content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
     def test_create_bucketlist(self):
