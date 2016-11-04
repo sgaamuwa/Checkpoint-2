@@ -1,5 +1,6 @@
 from datetime import datetime
 from app.models import Bucketlist
+from app.app import db
 
 
 class BucketlistItem(object):
@@ -45,9 +46,12 @@ class BucketlistItem(object):
         """modifies information for a given bucketlist in the database"""
         pass
 
-    def delete_bucketlist():
+    def delete_bucketlist(data):
         """deletes a particular bucketlist from the database"""
-        pass
+        bucketlist = Bucketlist.query.filter_by(id=data["id"]).first()
+        db.session.delete(bucketlist)
+        db.session.commit()
+        db.session.close()
 
     def search_bucketlist():
         """searches for a bucketlist by using its name"""
