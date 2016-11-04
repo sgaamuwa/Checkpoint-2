@@ -42,10 +42,11 @@ class Authentication(object):
         """checks if a user exists and verifies their password"""
         user = User.query.filter_by(username=username).first()
         if not user or not user.verify_password(password):
-            return False
+            return None
         return user
 
     def verify_token(token):
         """verifies tokens used in the system for access"""
         user = User.verify_auth_token(token)
-        return user is not None
+        if user:
+            return user
