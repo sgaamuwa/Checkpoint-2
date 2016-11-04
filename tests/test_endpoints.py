@@ -2,6 +2,7 @@ from authentication.authentication import Authentication
 from database.models import User
 from tests.test_setup import TestBaseCase
 
+
 class EndpointTests(TestBaseCase):
 
     def test_valid_login(self):
@@ -96,6 +97,7 @@ class EndpointTests(TestBaseCase):
         # test with incorrect ids
         response = self.app.delete('/bucketlists/43/items/43')
         self.assertEqual(response.status_code, 404)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,6 +2,7 @@ from authentication.authentication import Authentication
 from database.models import User
 from tests.test_setup import TestBaseCase
 
+
 class AuthenticationTest(TestBaseCase):
 
     def test_register_user(self):
@@ -26,6 +27,7 @@ class AuthenticationTest(TestBaseCase):
             "password": "password"
             })
         self.assertFalse(login)
+
 
 if __name__ == "__main__":
     unittest.main()

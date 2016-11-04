@@ -1,7 +1,7 @@
 from app import app, db
 from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import (TimedJSONWebSignatureSerializer
-                          as Serializer, BadSignature, SignatureExpired)
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
 
 class User(db.Model):
     """User Database class
@@ -42,6 +42,7 @@ class Bucketlist(db.Model):
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
     created_by = db.Column(db.String(250), nullable=False)
+
 
 class Item(db.Model):
     """Item Database class

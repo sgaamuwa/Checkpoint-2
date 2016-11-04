@@ -1,5 +1,7 @@
 from database.models import User
 from app import db
+
+
 class Authentication(object):
     """Authentication class
     

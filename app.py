@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request, g, session
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.httpauth import HTTPBasicAuth
 
+
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bucketlist.db"
 
@@ -78,6 +79,7 @@ def verify_password(username, password):
 @auth.login_required
 def get_auth_token():
     return jsonify({'token': g.user.generate_auth_token()})
+
 
 if __name__ == "__main__":
     app.secret_key = "SHKJY"

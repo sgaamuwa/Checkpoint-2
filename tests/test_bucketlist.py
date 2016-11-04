@@ -2,6 +2,7 @@ from bucketlist.bucketlist import Bucketlist
 from database import models
 from tests.test_setup import TestBaseCase
 
+
 class BucketlistTest(TestBaseCase):
 
     def test_create_bucketlist(self):

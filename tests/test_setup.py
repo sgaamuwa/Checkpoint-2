@@ -3,6 +3,7 @@ import unittest
 from database.models import User, Bucketlist, Item
 from app import app, db
 
+
 class TestBaseCase(unittest.TestCase):
 
     def setUp(self):
@@ -15,6 +16,7 @@ class TestBaseCase(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+
 
 if __name__ == "__main__":
     unittest.main()
