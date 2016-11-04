@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.models import Bucketlist
+from app.models import Bucketlist, Item
 from app.app import db
 
 
@@ -36,7 +36,31 @@ class BucketlistItem(object):
 
     def list_bucketlists():
         """lists all the bucketlists that are in the database"""
-        pass
+        bucketlist_list = {}
+        bucketlists = Bucketlist.query.all()
+        for bucketlist in bucketlists:
+            item_list = []
+            items = Item.query.filter_by(bucketlist=bucketlist.id).all()
+            for item in items:
+                item_dict = {
+                    "id": item.id,
+                    "name": item.name,
+                    "date_created": date_created,
+                    "date_modified": date_modified,
+                    "done": done
+                }
+                item_list.append(item_dict)
+            bucketlist_dict = {
+                "id": bucketlist.id,
+                "name": bucketlist.name,
+                "items": item_list,
+                "date_created": bucketlist.date_created,
+                "date_modified": bucketlist.date_modified,
+                "created_by": bucketlist.created_by
+            }
+            bucketlist_list[bucketlist.name] = bucketlist_dict
+        return bucketlist_list
+
 
     def get_bucketlist(identifier):
         """returns a particular bucket list and its items"""
@@ -55,6 +79,7 @@ class BucketlistItem(object):
 
     def search_bucketlist():
         """searches for a bucketlist by using its name"""
+
         pass
 
     def create_item(name, bucketlist_id):
