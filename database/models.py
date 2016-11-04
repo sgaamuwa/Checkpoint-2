@@ -42,6 +42,7 @@ class Bucketlist(db.Model):
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
     created_by = db.Column(db.String(250), nullable=False)
+    items = db.relationship('Item', backref="post", cascade="all, delete-orphan")
 
 
 class Item(db.Model):
@@ -54,5 +55,7 @@ class Item(db.Model):
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
     done = db.Column(db.Boolean, nullable=False)
+    bucketlist = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
+
 
 db.create_all()
