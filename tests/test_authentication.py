@@ -16,6 +16,10 @@ class AuthenticationTest(TestBaseCase):
 
     def test_login_user(self):
         # check that a user in the system can log in
+        Authentication.register_user({
+            "username": "user", 
+            "password": "password123"
+            })
         login = Authentication.login_user({
             "username": "user", 
             "password": "password123"
