@@ -1,4 +1,4 @@
-from app import app, db
+from app.app import app, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 

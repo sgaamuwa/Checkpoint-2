@@ -1,4 +1,8 @@
-class Bucketlist(object):
+from datetime import datetime
+from app.models import Bucketlist
+
+
+class BucketlistItem(object):
     """BucketList class 
     
     The bucket list class has methods for managing the bucketlists and items
@@ -9,9 +13,25 @@ class Bucketlist(object):
     using the bucket list class
     """
 
-    def create_bucketlist(name):
+    def create_bucketlist(data, user):
         """creates a bucketlist using information sent using POST"""
-        pass
+        bucketlist = Bucketlist(
+            name=data["name"],
+            date_created=datetime.now(),
+            date_modified=datetime.now(),
+            created_by=user
+        )
+        db.session.add(bucketlist)
+        db.session.commit()
+        new_entry = {
+            "id": bucketlist.id,
+            "name": bucketlist.name,
+            "date_created": bucketlist.date_created,
+            "date_modified": bucketlist.date_modified,
+            "created_by": bucketlist.created_by
+        }
+        db.session.close()
+        return new_entry
 
     def list_bucketlists():
         """lists all the bucketlists that are in the database"""

@@ -1,5 +1,5 @@
-from bucketlist.bucketlist import Bucketlist
-from database import models
+from app.bucketlist import Bucketlist
+from app import models
 from tests.test_setup import TestBaseCase
 
 

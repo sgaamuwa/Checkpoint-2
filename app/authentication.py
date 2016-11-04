@@ -1,5 +1,5 @@
-from database.models import User
-from app import db
+from app.models import User
+from app.app import db
 
 
 class Authentication(object):
@@ -9,6 +9,7 @@ class Authentication(object):
     Users can be registered with a username and password and added to 
     the database
     Logs in users into the system
+    Verifies passwords and token keys for users
     """
 
     def register_user(user_data):

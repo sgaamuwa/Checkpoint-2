@@ -1,7 +1,6 @@
 import unittest
 
-from database.models import User, Bucketlist, Item
-from app import app, db
+from app.app import app, db
 
 
 class TestBaseCase(unittest.TestCase):
