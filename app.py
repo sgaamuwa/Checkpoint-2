@@ -6,6 +6,7 @@ from flask.ext.httpauth import HTTPBasicAuth
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///bucketlist.db"
+app.config["SECRET_KEY"] = "kinggaamuwasamuel"
 
 db = SQLAlchemy(app)
 auth = HTTPBasicAuth()
@@ -68,12 +69,19 @@ def delete_item():
 
 @auth_token.verify_password
 def verify_auth_token(token, unused):
-    return authentication.Authentication.verify_token(token)
+    if authentication.Authentication.verify_token(token) is not None:
+        g.user = authentication.Authentication.verify_token(token)
+        return True
+    else:
+        return False
 
 @auth.verify_password
 def verify_password(username, password):
-    g.user = authentication.Authentication.verify_user(username, password)
-    return True
+    if authentication.Authentication.verify_user(username, password) is not None:
+        g.user = authentication.Authentication.verify_user(username, password)
+        return True
+    else:
+        return False
 
 @app.route('/token')
 @auth.login_required
