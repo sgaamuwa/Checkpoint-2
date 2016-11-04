@@ -1,5 +1,5 @@
 from authentication import Authentication 
-from bucketlist import Bucketlist
+from bucketlist import BucketlistItem
 from app.app import app
 from flask import jsonify, request, g, session
 from flask_sqlalchemy import SQLAlchemy
