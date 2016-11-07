@@ -86,7 +86,7 @@ class EndpointTests(TestBaseCase):
         # test with a correct bucketlist id
         item = {"name": "item1"}
         response = self.app.post(
-            "/bucketlists/1/items/"
+            "/bucketlists/1/items/",
             data=item,
             content_type="application/json")
         self.assertEqual(response.status_code, 200)

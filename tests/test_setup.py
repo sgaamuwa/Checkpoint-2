@@ -1,5 +1,6 @@
 import unittest
 
+from app.models import User, Bucketlist, Item
 from app.app import app, db
 
 
