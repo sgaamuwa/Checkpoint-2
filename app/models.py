@@ -1,4 +1,4 @@
-from app.app import app, db
+from app import app, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
@@ -55,7 +55,7 @@ class Item(db.Model):
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
     done = db.Column(db.Boolean, nullable=False)
-    bucketlist = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
+    bucketlist = db.Column(db.Integer, db.ForeignKey('bucketlist.id'), nullable=False)
 
 
 db.create_all()
