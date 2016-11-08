@@ -1,7 +1,7 @@
 import unittest
 import json
 
-from app.models import User, Bucketlist, Item
+from app.models import Bucketlist, Item
 from resource import app, db
 
 
@@ -17,13 +17,13 @@ class TestBaseCase(unittest.TestCase):
         
         data = {"username": "samuel", "password": "pass123"}
         # register the User
-        reg_resp = self.app.post(
+        self.app.post(
             "/auth/register",
             data=json.dumps(data),
             content_type="application/json"
         )
         # log in the user
-        login_resp = self.app.post(
+        self.app.post(
             "/auth/login",
             data=json.dumps(data),
             content_type="application/json"
@@ -41,7 +41,7 @@ class TestBaseCase(unittest.TestCase):
         }
         # create a test bucketlist
         bucketlist = {"name": "New Bucketlist"}
-        buck_resp = self.app.post(
+        self.app.post(
             "/bucketlists/",
             data=json.dumps(bucketlist),
             content_type="application/json",

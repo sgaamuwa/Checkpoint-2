@@ -51,7 +51,6 @@ class BucketlistTest(TestBaseCase):
         self.assertEqual(bucketlist.name, "new")
         # update bucketlist with a new name
         BucketlistItem.update_bucketlist({"name": "new name"}, 2)
-        item = Bucketlist.query.filter_by(id=1).first()
         # assert that the name is the updated name
         self.assertEqual(bucketlist.name, "new name")
 

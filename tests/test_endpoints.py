@@ -1,6 +1,5 @@
 import json
-from app.authentication import Authentication
-from app.models import User
+
 from tests.test_setup import TestBaseCase
 
 

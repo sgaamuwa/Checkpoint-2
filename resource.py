@@ -2,7 +2,6 @@ from app.authentication import Authentication
 from app.bucketlist import BucketlistItem
 from app.app import app, db
 from flask import jsonify, request, g, session
-from flask_sqlalchemy import SQLAlchemy
 from flask.ext.httpauth import HTTPBasicAuth, HTTPTokenAuth
 
 
