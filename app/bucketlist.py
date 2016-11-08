@@ -1,6 +1,6 @@
 from datetime import datetime
-from models import Bucketlist, Item
-from app import db
+from app.models import Bucketlist, Item
+from app.app import db
 
 
 class BucketlistItem(object):
@@ -20,7 +20,7 @@ class BucketlistItem(object):
             name=data["name"],
             date_created=datetime.now(),
             date_modified=datetime.now(),
-            created_by=user.username
+            created_by=user
         )
         db.session.add(bucketlist)
         db.session.commit()
@@ -74,9 +74,9 @@ class BucketlistItem(object):
             item_dict = {
                 "id": item.id,
                 "name": item.name,
-                "date_created": date_created,
-                "date_modified": date_modified,
-                "done": done
+                "date_created": item.date_created,
+                "date_modified": item.date_modified,
+                "done": item.done
             }
             item_list.append(item_dict)
         bucketlist_dict = {
@@ -95,6 +95,15 @@ class BucketlistItem(object):
         bucketlist.name = data["name"]
         bucketlist.date_modified = datetime.now()
         db.session.commit()
+        bucketlist_dict = {
+                "id": bucketlist.id,
+                "name": bucketlist.name,
+                "date_created": bucketlist.date_created,
+                "date_modified": bucketlist.date_modified,
+                "created_by": bucketlist.created_by
+            }
+        db.session.close()
+        return bucketlist_dict
 
     def delete_bucketlist(id):
         """deletes a particular bucketlist from the database"""
@@ -128,14 +137,27 @@ class BucketlistItem(object):
         db.session.close()
         return new_entry
 
-    def update_item(data):
+    def update_item(data, id, bucketlist_id):
         """updates a specified item in a particular bucketlist"""
-        bucketlist = Bucketlist.query.filter_by(id=data["bucketlist"]).first()
-        item = Item.query.filter_by(id=data["id"], bucketlist=data["bucketlist"]).first()
-        item.done = data["done"]
+        bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
+        item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
+        if data["done"] == "true":
+            item.done = True
+        else:
+            item.done = False
         item.date_modified = datetime.now()
         bucketlist.date_modified = datetime.now()
         db.session.commit()
+        updated_item = {
+            "id": item.id,
+            "name": item.name,
+            "date_created": item.date_created,
+            "date_modified": item.date_modified,
+            "done": item.done,
+            "bucketlist": bucketlist.name
+        }
+        db.session.close()
+        return updated_item
 
     def delete_item(id, bucketlist_id):
         """deletes a specified item in a particular bucketlist"""

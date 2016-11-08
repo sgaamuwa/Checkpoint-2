@@ -1,10 +1,10 @@
-from app import app, db
+from app.app import app, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 class User(db.Model):
-    """User Database class
+    """User Model class
     This class defines database fields for the users of the system
     """
     __tablename__ = 'users'
@@ -33,7 +33,7 @@ class User(db.Model):
         
 
 class Bucketlist(db.Model):
-    """Bucketlist Database class
+    """Bucketlist Model class
     This class defines database fields for the bucketlists
     """
     __tablename__ = 'bucketlist'
@@ -46,7 +46,7 @@ class Bucketlist(db.Model):
 
 
 class Item(db.Model):
-    """Item Database class
+    """Item Model class
     This class defines database fields for the items in the bucketlists
     """
     __tablename__ = 'item'
