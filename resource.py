@@ -1,13 +1,13 @@
-from authentication import Authentication 
-from bucketlist import BucketlistItem
-from app import app
+from app.authentication import Authentication 
+from app.bucketlist import BucketlistItem
+from app.app import app, db
 from flask import jsonify, request, g, session
 from flask_sqlalchemy import SQLAlchemy
-from flask.ext.httpauth import HTTPBasicAuth
+from flask.ext.httpauth import HTTPBasicAuth, HTTPTokenAuth
 
 
 auth = HTTPBasicAuth()
-auth_token = HTTPBasicAuth()
+auth_token = HTTPTokenAuth()
 
 @app.route('/auth/register', methods=['POST'])
 def register_user():
@@ -39,7 +39,7 @@ def create_bucketlist():
     returns the json of the bucketlist created 
     """
     return jsonify({
-        "response": BucketlistItem.create_bucketlist(request.json, g.user)
+        "response": BucketlistItem.create_bucketlist(request.json, g.user.username)
         })
 
 
@@ -58,7 +58,16 @@ def get_bucketlist(identifier):
     """end point for listing a particular bucketlist
     returns a specified bucketlist and its items from the database
     """
-    return jsonify({"bucketlist": BucketlistItem.get_bucketlist(identifier)})
+    try:
+        return jsonify({
+            "bucketlist": BucketlistItem.get_bucketlist(identifier)
+            })
+    except:
+        response = jsonify({
+            "message": "Resource not found"
+        })
+        response.status_code = 404
+        return response
 
 
 @app.route('/bucketlists/<id>', methods=['PUT'])
@@ -67,9 +76,16 @@ def update_bucketlist(id):
     """end point for updating a particular bucketlist
     returns the bucketlist with its updated information
     """
-    return jsonify({
-        "bucketlist": BucketlistItem.update_bucketlist(request.json, id)
+    try:
+        return jsonify({
+            "bucketlist": BucketlistItem.update_bucketlist(request.json, id)
+            })
+    except:
+        response = jsonify({
+            "message": "Resource not found"
         })
+        response.status_code = 404
+        return response
 
 
 @app.route('/bucketlists/<id>', methods=['DELETE'])
@@ -78,7 +94,14 @@ def delete_bucketlist(id):
     """end point for deleting a particular Bucketlist
     returns a message that the delete was successful
     """
-    return jsonify(BucketlistItem.delete_bucketlist(id))
+    try:
+        return jsonify(BucketlistItem.delete_bucketlist(id))
+    except:
+        response = jsonify({
+            "message": "Resource not found"
+        })
+        response.status_code = 404
+        return response
 
 
 @app.route('/bucketlists/<id>/items/', methods=['POST'])
@@ -87,14 +110,28 @@ def create_item(id):
     """end point for creating an item for a certain BucketlistItem
     returns a json of the created item
     """
-    return jsonify(BucketlistItem.create_item(request.json, id))
+    try:
+        return jsonify(BucketlistItem.create_item(request.json, id))
+    except:
+        response = jsonify({
+            "message": "Resource not found"
+        })
+        response.status_code = 404
+        return response
 
 
 @app.route('/bucketlists/<id>/items/<item_id>', methods=['PUT'])
 @auth_token.login_required
-def update_item():
+def update_item(id, item_id):
     """end point for updating a particular item"""
-    pass
+    try:
+        return jsonify(BucketlistItem.update_item(request.json, item_id, id))
+    except:
+        response = jsonify({
+            "message": "Resource not found"
+        })
+        response.status_code = 404
+        return response
 
 
 @app.route('/bucketlists/<id>/items/<item_id>', methods=['DELETE'])
@@ -102,11 +139,18 @@ def update_item():
 def delete_item(id, item_id):
     """end point for deleting a particular item
     returns a message on the success of deletion"""
-    return jsonify(BucketlistItem.delete_item(item_id, id))
+    try:
+        return jsonify(BucketlistItem.delete_item(item_id, id))
+    except:
+        response = jsonify({
+            "message": "Resource not found"
+        })
+        response.status_code = 404
+        return response
 
 
-@auth_token.verify_password
-def verify_auth_token(token, unused):
+@auth_token.verify_token
+def verify_auth_token(token):
     """verifies the token used to access the api"""
     if Authentication.verify_token(token) is not None:
         g.user = Authentication.verify_token(token)
@@ -129,7 +173,9 @@ def verify_password(username, password):
 @auth.login_required
 def get_auth_token():
     """gets a token for the logged in user"""
-    return jsonify({'token': g.user.generate_auth_token()})
+    response = jsonify({'token': g.user.generate_auth_token()})
+    response.status_code = 200
+    return response
 
 
 if __name__ == "__main__":
