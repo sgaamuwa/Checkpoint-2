@@ -8,14 +8,14 @@ class AuthenticationTest(TestBaseCase):
     def test_register_user(self):
         """tests that a user is created and added to the database"""
         # assert that the database is empty
-        self.assertEqual(User.query.count(), 0)
+        self.assertEqual(User.query.count(), 1)
         # register a new user
         Authentication.register_user({
             "username": "user", 
             "password": "password123"
             })
         # assert that the database is incremented by one 
-        self.assertEqual(User.query.count(), 1)
+        self.assertEqual(User.query.count(), 2)
 
     def test_login_user(self):
         """tests that a registered user logs into the system"""
