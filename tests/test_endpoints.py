@@ -57,7 +57,7 @@ class EndpointTests(TestBaseCase):
         response = self.app.get(
             "/bucketlists/48",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_update_bucketlist(self):
         """tests that bucketlists are updated in the system"""
@@ -74,7 +74,7 @@ class EndpointTests(TestBaseCase):
         response = self.app.put(
             "/bucketlists/43",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_delete_bucketlist(self):
         """tests that bucketlists are deleted from the system"""
@@ -123,21 +123,21 @@ class EndpointTests(TestBaseCase):
             data=json.dumps(update_info),
             content_type="application/json",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
         # test with incorrect bucketlist id, correct item id
         response = self.app.put(
             "/bucketlists/43/items/1",
             data=json.dumps(update_info),
             content_type="application/json",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
         # test with incorrect ids
         response = self.app.put(
             "/bucketlists/43/items/43",
             data=json.dumps(update_info),
             content_type="application/json",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_delete_item(self):
         # test with all correct ids
