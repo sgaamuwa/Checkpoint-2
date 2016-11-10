@@ -4,9 +4,9 @@ from app.app import db
 
 class Authentication(object):
     """Authentication class
-    
-    The authentication class is used to manage users of the System 
-    Users can be registered with a username and password and added to 
+
+    The authentication class is used to manage users of the System
+    Users can be registered with a username and password and added to
     the database
     Logs in users into the system
     Verifies passwords and token keys for users
@@ -18,7 +18,7 @@ class Authentication(object):
         # give the user password a hash value and store it
         user.set_password(password=user_data['password'])
         result = User.query.all()
-        usernames = [user.username for user in result]
+        usernames = [users.username for users in result]
         if user_data["username"] in usernames:
             return "username already exists"
         if user in User.query.filter_by(username=user_data['username']):
@@ -37,12 +37,12 @@ class Authentication(object):
         returns an error if the credentials are not valid
         """
         user = User.query.filter_by(username=user_data['username']).first()
-        # check if the user and password exist and are right 
+        # check if the user and password exist and are right
         if user and user.verify_password(user_data['password']):
             return True
         else:
             return False
-        
+
     def verify_user(username, password):
         """checks if a user exists and verifies their password"""
         user = User.query.filter_by(username=username).first()

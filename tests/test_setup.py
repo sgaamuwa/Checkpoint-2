@@ -1,8 +1,7 @@
 import unittest
 import json
 
-from app.models import Bucketlist, Item
-from resource import app, db
+from manage import app, db
 
 
 class TestBaseCase(unittest.TestCase):
@@ -14,7 +13,6 @@ class TestBaseCase(unittest.TestCase):
         self.app = app.test_client()
         db.create_all()
 
-        
         data = {"username": "samuel", "password": "pass123"}
         # register the User
         self.app.post(

@@ -29,7 +29,7 @@ class BucketlistTest(TestBaseCase):
 
     def test_get_bucketlist(self):
         """tests that a particular bucketlist is retrieved"""
-        # create new bucketlists 
+        # create new bucketlists
         BucketlistItem.create_bucketlist({"name": "new"}, 1)
         BucketlistItem.create_bucketlist({"name": "blood"}, 1)
         BucketlistItem.create_bucketlist({"name": "hounds"}, 1)
@@ -47,7 +47,7 @@ class BucketlistTest(TestBaseCase):
         # create a bucketlist
         BucketlistItem.create_bucketlist({"name": "new"}, 1)
         bucketlist = Bucketlist.query.filter_by(id=2).first()
-        # assert that the name is the same 
+        # assert that the name is the same
         self.assertEqual(bucketlist.name, "new")
         # update bucketlist with a new name
         BucketlistItem.update_bucketlist({"name": "new name"}, 2, 1)
@@ -55,7 +55,7 @@ class BucketlistTest(TestBaseCase):
         self.assertEqual(bucketlist.name, "new name")
 
     def test_delete_bucketlist(self):
-        """tests that a specified bucketlist can be deleted from the database"""
+        """tests that a specified bucketlist is deleted from the database"""
         # create a new bucketlist
         BucketlistItem.create_bucketlist({"name": "another"}, 1)
         # assert that there are now two bucketlists
@@ -101,6 +101,3 @@ class BucketlistTest(TestBaseCase):
         BucketlistItem.delete_item(2, 2, 1)
         # assert that there is no item in the database
         self.assertEqual(Item.query.count(), 1)
-
-if __name__ == "__main__":
-    unittest.main()

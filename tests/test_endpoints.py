@@ -19,8 +19,8 @@ class EndpointTests(TestBaseCase):
         """tests that register responses with correct data"""
         register_data = {"username": "Samuel", "password": "incorrect"}
         response = self.app.post(
-            '/auth/register', 
-            data=json.dumps(register_data), 
+            '/auth/register',
+            data=json.dumps(register_data),
             content_type='application/json'
             )
         self.assertEqual(response.status_code, 200)
@@ -39,17 +39,17 @@ class EndpointTests(TestBaseCase):
     def test_list_bucketlist(self):
         """tests that list bucketlist returns a list of bucketlists"""
         response = self.app.get(
-            "/bucketlists/", 
+            "/bucketlists/",
             headers=self.headers
             )
         print(response.headers)
         self.assertEqual(response.status_code, 200)
-    
+
     def test_get_bucketlist(self):
         """tests that a bucketlist is returned when its id is passed"""
         # test with a correct id
         response = self.app.get(
-            "/bucketlists/1", 
+            "/bucketlists/1",
             headers=self.headers
             )
         self.assertEqual(response.status_code, 200)
@@ -58,7 +58,7 @@ class EndpointTests(TestBaseCase):
             "/bucketlists/48",
             headers=self.headers)
         self.assertEqual(response.status_code, 404)
-    
+
     def test_update_bucketlist(self):
         """tests that bucketlists are updated in the system"""
         # test with a correct id
@@ -80,11 +80,11 @@ class EndpointTests(TestBaseCase):
         """tests that bucketlists are deleted from the system"""
         # test with a correct id
         response = self.app.delete(
-            "/bucketlists/1", 
+            "/bucketlists/1",
             headers=self.headers
             )
         self.assertEqual(response.status_code, 200)
-        # test with an incorrect id 
+        # test with an incorrect id
         response = self.app.delete(
             "/bucketlists/43",
             headers=self.headers)
@@ -138,11 +138,11 @@ class EndpointTests(TestBaseCase):
             content_type="application/json",
             headers=self.headers)
         self.assertEqual(response.status_code, 404)
-    
+
     def test_delete_item(self):
         # test with all correct ids
         response = self.app.delete(
-            "/bucketlists/1/items/1", 
+            "/bucketlists/1/items/1",
             headers=self.headers)
         self.assertEqual(response.status_code, 200)
         # test with correct bucketlist id, incorrect item id
@@ -160,7 +160,3 @@ class EndpointTests(TestBaseCase):
             "/bucketlists/43/items/43",
             headers=self.headers)
         self.assertEqual(response.status_code, 404)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -11,34 +11,30 @@ class AuthenticationTest(TestBaseCase):
         self.assertEqual(User.query.count(), 1)
         # register a new user
         Authentication.register_user({
-            "username": "user", 
+            "username": "user",
             "password": "password123"
             })
-        # assert that the database is incremented by one 
+        # assert that the database is incremented by one
         self.assertEqual(User.query.count(), 2)
 
     def test_login_user(self):
         """tests that a registered user logs into the system"""
         # create a new user
         Authentication.register_user({
-            "username": "user", 
+            "username": "user",
             "password": "password123"
             })
         # log user into the system
         login = Authentication.login_user({
-            "username": "user", 
+            "username": "user",
             "password": "password123"
             })
         # assert that they logged in
         self.assertTrue(login)
         # log in with wrong password
         login = Authentication.login_user({
-            "username": "user", 
+            "username": "user",
             "password": "password"
             })
         # assert that the login is false
         self.assertFalse(login)
-
-
-if __name__ == "__main__":
-    unittest.main()

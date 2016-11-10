@@ -22,7 +22,7 @@ class User(db.Model):
     def generate_auth_token(self, expires_in=1800):
         s = Serializer(app.config["SECRET_KEY"], expires_in=expires_in)
         return s.dumps({"id": self.id}).decode("utf-8")
-    
+
     @staticmethod
     def verify_auth_token(token):
         s = Serializer(app.config['SECRET_KEY'])
@@ -31,7 +31,7 @@ class User(db.Model):
         except:
             return None
         return User.query.get(data['id'])
-        
+
 
 class Bucketlist(db.Model):
     """Bucketlist Model class
@@ -42,7 +42,10 @@ class Bucketlist(db.Model):
     name = db.Column(db.String(250), nullable=False)
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
-    created_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    created_by = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False)
     items = db.relationship('Item', backref="bucketlists", lazy="dynamic")
 
 
@@ -56,6 +59,9 @@ class Item(db.Model):
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
     done = db.Column(db.Boolean, nullable=False)
-    bucketlist = db.Column(db.Integer, db.ForeignKey('bucketlist.id', ondelete='CASCADE'), nullable=False)
+    bucketlist = db.Column(
+        db.Integer,
+        db.ForeignKey('bucketlist.id', ondelete='CASCADE'),
+        nullable=False)
 
 db.create_all()
