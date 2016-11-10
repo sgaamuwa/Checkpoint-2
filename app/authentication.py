@@ -17,6 +17,10 @@ class Authentication(object):
         user = User(username=user_data['username'])
         # give the user password a hash value and store it
         user.set_password(password=user_data['password'])
+        result = User.query.all()
+        usernames = [user.username for user in result]
+        if user_data["username"] in usernames:
+            return "username already exists"
         if user in User.query.filter_by(username=user_data['username']):
             status = "success"
         try:
