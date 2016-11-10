@@ -13,7 +13,7 @@ api.add_resource(Register, "/auth/register", endpoint="register")
 api.add_resource(Login, "/auth/login", endpoint="login")
 api.add_resource(Bucketlists, "/bucketlists/", endpoint="bucketlists")
 api.add_resource(Bucketlist, "/bucketlists/<id>", endpoint="bucketlist")
-api.add_resource(Items, "/bucketlists/<id>/items", endpoint="items")
+api.add_resource(Items, "/bucketlists/<id>/items/", endpoint="items")
 api.add_resource(Item, "/bucketlists/<id>/items/<item_id>", endpoint="item")
 api.add_resource(Token, "/token", endpoint="token")
 
