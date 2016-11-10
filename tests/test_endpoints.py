@@ -88,7 +88,7 @@ class EndpointTests(TestBaseCase):
         response = self.app.delete(
             "/bucketlists/43",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_create_item(self):
         """tests that items are created in the system"""
@@ -106,7 +106,7 @@ class EndpointTests(TestBaseCase):
             data=json.dumps(item),
             content_type="application/json",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
 
     def test_update_item(self):
         # test with all correct ids
