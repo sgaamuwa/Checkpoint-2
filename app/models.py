@@ -11,7 +11,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(250), nullable=False)
     password_hash = db.Column(db.String(250))
-    bucketlists = db.relationship("Bucketlist", backref="post", cascade="all, delete_orphan")
+    bucketlists = db.relationship("Bucketlist", backref="user", lazy="dynamic")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -42,8 +42,8 @@ class Bucketlist(db.Model):
     name = db.Column(db.String(250), nullable=False)
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
-    created_by = db.Column(db.Integer, db.ForeignKey("user.id") nullable=False)
-    items = db.relationship('Item', backref="post", cascade="all, delete-orphan")
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    items = db.relationship('Item', backref="bucketlists", lazy="dynamic")
 
 
 class Item(db.Model):
@@ -56,7 +56,6 @@ class Item(db.Model):
     date_created = db.Column(db.DateTime(True), nullable=False)
     date_modified = db.Column(db.DateTime(True), nullable=True)
     done = db.Column(db.Boolean, nullable=False)
-    bucketlist = db.Column(db.Integer, db.ForeignKey('bucketlist.id'), nullable=False)
-
+    bucketlist = db.Column(db.Integer, db.ForeignKey('bucketlist.id', ondelete='CASCADE'), nullable=False)
 
 db.create_all()
