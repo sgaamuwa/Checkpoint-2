@@ -4,11 +4,11 @@ from app.app import db
 
 
 class BucketlistItem(object):
-    """BucketList class 
-    
+    """BucketList class
+
     The bucket list class has methods for managing the bucketlists and items
-    Bucketlist enables one to create, list, return, update and delete 
-    bucketlists 
+    Bucketlist enables one to create, list, return, update and delete
+    bucketlists
 
     Each bucketlist has list items that can be created, updated and deleted
     using the bucket list class
@@ -64,7 +64,6 @@ class BucketlistItem(object):
             bucketlist_list[bucketlist.name] = bucketlist_dict
         return bucketlist_list
 
-
     def get_bucketlist(data, user_id):
         """returns a particular bucket list and its items"""
         # if "id" in data.keys():
@@ -93,7 +92,7 @@ class BucketlistItem(object):
                 "created_by": bucketlist.created_by
             }
         return bucketlist_dict
-        
+
     def update_bucketlist(data, id, user_id):
         """modifies information for a given bucketlist in the database"""
         bucketlist = Bucketlist.query.filter_by(id=id).first()
@@ -117,9 +116,10 @@ class BucketlistItem(object):
         bucketlist = Bucketlist.query.filter_by(id=id).first()
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
-        db.session.delete(bucketlist)
+        Bucketlist.query.filter_by(id=id).delete()
         db.session.commit()
         db.session.close()
+
         return {"message": "Bucketlist ID:{} deleted".format(id)}
 
     def create_item(data, bucketlist_id, user_id):
@@ -175,6 +175,8 @@ class BucketlistItem(object):
     def delete_item(id, bucketlist_id, user_id):
         """deletes a specified item in a particular bucketlist"""
         item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
+        if item.bucketlists.created_by != user_id:
+            raise Exception("Not the user")
         db.session.delete(item)
         db.session.commit()
         db.session.close()
@@ -183,4 +185,3 @@ class BucketlistItem(object):
                 id,
                 bucketlist_id)
             }
-    

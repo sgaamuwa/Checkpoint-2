@@ -106,7 +106,7 @@ class Bucketlist(Resource):
         returns a message that the delete was successful
         """
         try:
-            return jsonify(BucketlistItem.delete_bucketlist(id))
+            return jsonify(BucketlistItem.delete_bucketlist(id, g.user.id))
         except Exception:
             response = jsonify({
                 "message": "Unauthorized access for bucketlist"
@@ -175,7 +175,7 @@ class Item(Resource):
         """end point for deleting a particular item
         returns a message on the success of deletion"""
         try:
-            return jsonify(BucketlistItem.delete_item(item_id, id))
+            return jsonify(BucketlistItem.delete_item(item_id, id, g.user.id))
         except Exception:
             response = jsonify({
                 "message": "Unauthorized access for bucketlist"
