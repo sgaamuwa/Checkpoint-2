@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.models import Bucketlist, Item
+from app.models import Bucketlist, Item, User
 from app.app import db
 
 
@@ -14,15 +14,16 @@ class BucketlistItem(object):
     using the bucket list class
     """
 
-    def create_bucketlist(data, user):
+    def create_bucketlist(data, user_id):
         """creates a bucketlist using information sent using POST"""
+        user = User.query.filter_by(id=user_id).first()
         bucketlist = Bucketlist(
             name=data["name"],
             date_created=datetime.now(),
             date_modified=datetime.now(),
-            created_by=user
+            created_by=user.id
         )
-        db.session.add(bucketlist)
+        user.bucketlists.append(bucketlist)
         db.session.commit()
         new_entry = {
             "id": bucketlist.id,
@@ -34,10 +35,12 @@ class BucketlistItem(object):
         db.session.close()
         return new_entry
 
-    def list_bucketlists():
+    def list_bucketlists(id):
         """lists all the bucketlists that are in the database"""
         bucketlist_list = {}
-        bucketlists = Bucketlist.query.all()
+        bucketlists = Bucketlist.query.filter_by(created_by=id).all()
+        if len(bucketlists) == 0:
+            return {"message": "User has no bucketlists"}
         for bucketlist in bucketlists:
             item_list = []
             items = Item.query.filter_by(bucketlist=bucketlist.id).all()
@@ -62,12 +65,14 @@ class BucketlistItem(object):
         return bucketlist_list
 
 
-    def get_bucketlist(data):
+    def get_bucketlist(data, user_id):
         """returns a particular bucket list and its items"""
         # if "id" in data.keys():
         bucketlist = Bucketlist.query.filter_by(id=data).first()
         # elif "name" in data.keys():
         #     bucketlist = Bucketlist.query.filter_by(name=data["name"]).first()
+        if bucketlist.created_by != user_id:
+            raise Exception("Not the user")
         item_list = []
         items = Item.query.filter_by(bucketlist=bucketlist.id).all()
         for item in items:
@@ -89,9 +94,11 @@ class BucketlistItem(object):
             }
         return bucketlist_dict
         
-    def update_bucketlist(data, id):
+    def update_bucketlist(data, id, user_id):
         """modifies information for a given bucketlist in the database"""
         bucketlist = Bucketlist.query.filter_by(id=id).first()
+        if bucketlist.created_by != user_id:
+            raise Exception("Not the user")
         bucketlist.name = data["name"]
         bucketlist.date_modified = datetime.now()
         db.session.commit()
@@ -105,17 +112,21 @@ class BucketlistItem(object):
         db.session.close()
         return bucketlist_dict
 
-    def delete_bucketlist(id):
+    def delete_bucketlist(id, user_id):
         """deletes a particular bucketlist from the database"""
         bucketlist = Bucketlist.query.filter_by(id=id).first()
+        if bucketlist.created_by != user_id:
+            raise Exception("Not the user")
         db.session.delete(bucketlist)
         db.session.commit()
         db.session.close()
         return {"message": "Bucketlist ID:{} deleted".format(id)}
 
-    def create_item(data, bucketlist_id):
+    def create_item(data, bucketlist_id, user_id):
         """creates an item in a particular bucketlist"""
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
+        if bucketlist.created_by != user_id:
+            raise Exception("Not the user")
         item = Item(
             name=data["name"],
             date_created=datetime.now(),
@@ -123,8 +134,8 @@ class BucketlistItem(object):
             done=False,
             bucketlist=bucketlist.id
         )
+        bucketlist.items.append(item)
         bucketlist.date_modified = datetime.now()
-        db.session.add(item)
         db.session.commit()
         new_entry = {
             "id": item.id,
@@ -137,9 +148,11 @@ class BucketlistItem(object):
         db.session.close()
         return new_entry
 
-    def update_item(data, id, bucketlist_id):
+    def update_item(data, id, bucketlist_id, user_id):
         """updates a specified item in a particular bucketlist"""
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
+        if bucketlist.created_by != user_id:
+            raise Exception("Not the user")
         item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
         if data["done"] == "true":
             item.done = True
@@ -159,13 +172,15 @@ class BucketlistItem(object):
         db.session.close()
         return updated_item
 
-    def delete_item(id, bucketlist_id):
+    def delete_item(id, bucketlist_id, user_id):
         """deletes a specified item in a particular bucketlist"""
         item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
         db.session.delete(item)
         db.session.commit()
         db.session.close()
         return {
-            "message": "Item ID:{} deleted from Bucketlist ID:{}".format(id, bucketlist_id)
+            "message": "Item ID:{} deleted from Bucketlist ID:{}".format(
+                id,
+                bucketlist_id)
             }
     

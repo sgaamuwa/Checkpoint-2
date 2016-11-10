@@ -14,7 +14,6 @@ def register_user():
     returns string detailing success of registration
     """
     response = jsonify({
-        "status": 200, 
         'result': Authentication.register_user(request.json)
         })
     response.status_code = 200
@@ -38,7 +37,7 @@ def create_bucketlist():
     returns the json of the bucketlist created 
     """
     return jsonify({
-        "response": BucketlistItem.create_bucketlist(request.json, g.user.username)
+        "response": BucketlistItem.create_bucketlist(request.json, g.user.id)
         })
 
 
@@ -48,19 +47,25 @@ def list_bucketlist():
     """end point for listing Bucketlists in the api
     returns all the bucketlists and their items in the database
     """
-    return jsonify({"bucketlists": BucketlistItem.list_bucketlists()})
+    return jsonify({"bucketlists": BucketlistItem.list_bucketlists(g.user.id)})
 
 
-@app.route('/bucketlists/<identifier>', methods=['GET'])
+@app.route('/bucketlists/<id>', methods=['GET'])
 @auth_token.login_required
-def get_bucketlist(identifier):
+def get_bucketlist(id):
     """end point for listing a particular bucketlist
     returns a specified bucketlist and its items from the database
     """
     try:
         return jsonify({
-            "bucketlist": BucketlistItem.get_bucketlist(identifier)
+            "response": BucketlistItem.get_bucketlist(id, g.user.id)
             })
+    except Exception:
+        response = jsonify({
+            "message": "Unauthorized access for bucketlist"
+        })
+        response.status_code = 401
+        return response
     except:
         response = jsonify({
             "message": "Resource not found"
@@ -77,8 +82,14 @@ def update_bucketlist(id):
     """
     try:
         return jsonify({
-            "bucketlist": BucketlistItem.update_bucketlist(request.json, id)
+            "response": BucketlistItem.update_bucketlist(request.json, id, g.user.id)
             })
+    except Exception:
+        response = jsonify({
+            "message": "Unauthorized access for bucketlist"
+        })
+        response.status_code = 401
+        return response
     except:
         response = jsonify({
             "message": "Resource not found"
@@ -95,6 +106,12 @@ def delete_bucketlist(id):
     """
     try:
         return jsonify(BucketlistItem.delete_bucketlist(id))
+    except Exception:
+        response = jsonify({
+            "message": "Unauthorized access for bucketlist"
+        })
+        response.status_code = 401
+        return response
     except:
         response = jsonify({
             "message": "Resource not found"
@@ -110,7 +127,14 @@ def create_item(id):
     returns a json of the created item
     """
     try:
-        return jsonify(BucketlistItem.create_item(request.json, id))
+        return jsonify(
+            BucketlistItem.create_item(request.json, id, g.user.id))
+    except Exception:
+        response = jsonify({
+            "message": "Unauthorized access for bucketlist"
+        })
+        response.status_code = 401
+        return response
     except:
         response = jsonify({
             "message": "Resource not found"
@@ -124,7 +148,19 @@ def create_item(id):
 def update_item(id, item_id):
     """end point for updating a particular item"""
     try:
-        return jsonify(BucketlistItem.update_item(request.json, item_id, id))
+        return jsonify(
+            BucketlistItem.update_item(
+                request.json, 
+                item_id, 
+                id, 
+                g.user.id
+            ))
+    except Exception:
+        response = jsonify({
+            "message": "Unauthorized access for bucketlist"
+        })
+        response.status_code = 401
+        return response
     except:
         response = jsonify({
             "message": "Resource not found"
@@ -140,6 +176,12 @@ def delete_item(id, item_id):
     returns a message on the success of deletion"""
     try:
         return jsonify(BucketlistItem.delete_item(item_id, id))
+    except Exception:
+        response = jsonify({
+            "message": "Unauthorized access for bucketlist"
+        })
+        response.status_code = 401
+        return response
     except:
         response = jsonify({
             "message": "Resource not found"
