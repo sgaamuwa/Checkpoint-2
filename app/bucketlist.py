@@ -35,12 +35,19 @@ class BucketlistItem(object):
         db.session.close()
         return new_entry
 
-    def list_bucketlists(id):
+    def list_bucketlists(data, user_id):
         """lists all the bucketlists that are in the database"""
         bucketlist_list = {}
-        bucketlists = Bucketlist.query.filter_by(created_by=id).all()
-        if len(bucketlists) == 0:
-            return {"message": "User has no bucketlists"}
+        if data["q"] is not None:
+            bucketlists = Bucketlist.query.filter(
+                Bucketlist.name.ilike("%"+data["q"]+"%")
+            ).filter_by(created_by=user_id).all()
+            if len(bucketlists) == 0:
+                return {"message": "User has no matching bucketlists"}
+        else:
+            bucketlists = Bucketlist.query.filter_by(created_by=user_id).all()
+            if len(bucketlists) == 0:
+                return {"message": "User has no bucketlists"}
         for bucketlist in bucketlists:
             item_list = []
             items = Item.query.filter_by(bucketlist=bucketlist.id).all()
@@ -66,15 +73,11 @@ class BucketlistItem(object):
 
     def get_bucketlist(data, user_id):
         """returns a particular bucket list and its items"""
-        # if "id" in data.keys():
         bucketlist = Bucketlist.query.filter_by(id=data).first()
-        # elif "name" in data.keys():
-        #     bucketlist = Bucketlist.query.filter_by(name=data["name"]).first()
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
         item_list = []
-        items = Item.query.filter_by(bucketlist=bucketlist.id).all()
-        for item in items:
+        for item in bucketlist.items:
             item_dict = {
                 "id": item.id,
                 "name": item.name,

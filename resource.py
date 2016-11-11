@@ -2,7 +2,7 @@ from app.authentication import Authentication
 from app.bucketlist import BucketlistItem
 from flask import jsonify, request, g, session
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 
 auth = HTTPBasicAuth()
@@ -48,7 +48,11 @@ class Bucketlists(Resource):
         """end point for listing Bucketlists in the api
         returns all the bucketlists and their items in the database
         """
+        parser = reqparse.RequestParser()
+        parser.add_argument("q", type=str, help='name to search')
+        args = parser.parse_args()
         return jsonify({"bucketlists": BucketlistItem.list_bucketlists(
+            args,
             g.user.id)
             })
 
