@@ -19,13 +19,23 @@ class BucketlistTest(TestBaseCase):
         """tests that all bucketlists in the system are listed"""
         # add to an empty bucketlist then list to see it is there
         BucketlistItem.create_bucketlist({"name": "new"}, 1)
-        self.assertEqual(len(BucketlistItem.list_bucketlists(1)), 2)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists({"q": None}, 1)),
+            2)
         # assert that there are now two in the list
         BucketlistItem.create_bucketlist({"name": "blood"}, 1)
-        self.assertEqual(len(BucketlistItem.list_bucketlists(1)), 3)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists({"q": None}, 1)),
+            3)
         # assert that there are now three in the list
         BucketlistItem.create_bucketlist({"name": "hounds"}, 1)
-        self.assertEqual(len(BucketlistItem.list_bucketlists(1)), 4)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists({"q": None}, 1)),
+            4)
+        # assert can search using substrings
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists({"q": "o"}, 1)),
+            2)
 
     def test_get_bucketlist(self):
         """tests that a particular bucketlist is retrieved"""
@@ -37,10 +47,6 @@ class BucketlistTest(TestBaseCase):
         self.assertEqual(BucketlistItem.get_bucketlist(2, 1)["name"], "new")
         self.assertEqual(BucketlistItem.get_bucketlist(3, 1)["name"], "blood")
         self.assertEqual(BucketlistItem.get_bucketlist(4, 1)["name"], "hounds")
-        # assert that you can get by name
-        # self.assertEqual(BucketlistItem.get_bucketlist({"name": "new"})["name"], "new")
-        # self.assertEqual(BucketlistItem.get_bucketlist({"name": "blood"})["name"], "blood")
-        # self.assertEqual(BucketlistItem.get_bucketlist({"name": "hounds"})["name"], "hounds")
 
     def test_update_bucketlist(self):
         """tests that a particular bucketlist can be updated"""

@@ -149,14 +149,14 @@ class EndpointTests(TestBaseCase):
         response = self.app.delete(
             "/bucketlists/1/items/43",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
         # test with incorrect bucketlist id, correct item id
         response = self.app.delete(
             "/bucketlists/43/items/1",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
         # test with incorrect ids
         response = self.app.delete(
             "/bucketlists/43/items/43",
             headers=self.headers)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 401)
