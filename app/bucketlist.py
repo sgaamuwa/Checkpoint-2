@@ -37,18 +37,22 @@ class BucketlistItem(object):
 
     def list_bucketlists(data, user_id):
         """lists all the bucketlists that are in the database"""
+        page = data.get("page", 1)
+        limit = data.get("limit", 20)
         bucketlist_list = {}
         if data["q"] is not None:
             bucketlists = Bucketlist.query.filter(
                 Bucketlist.name.ilike("%"+data["q"]+"%")
-            ).filter_by(created_by=user_id).all()
-            if len(bucketlists) == 0:
+            ).filter_by(created_by=user_id).paginate(page, limit, False)
+            if len(bucketlists.items) == 0:
                 return {"message": "User has no matching bucketlists"}
         else:
-            bucketlists = Bucketlist.query.filter_by(created_by=user_id).all()
-            if len(bucketlists) == 0:
+            bucketlists = Bucketlist.query.filter_by(
+                created_by=user_id
+            ).paginate(page, limit, False)
+            if len(bucketlists.items) == 0:
                 return {"message": "User has no bucketlists"}
-        for bucketlist in bucketlists:
+        for bucketlist in bucketlists.items:
             item_list = []
             items = Item.query.filter_by(bucketlist=bucketlist.id).all()
             for item in items:

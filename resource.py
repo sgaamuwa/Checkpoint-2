@@ -50,6 +50,8 @@ class Bucketlists(Resource):
         """
         parser = reqparse.RequestParser()
         parser.add_argument("q", type=str, help='name to search')
+        parser.add_argument("page", type=int, help="page of results")
+        parser.add_argument("limit", type=int, help="limit for results")
         args = parser.parse_args()
         return jsonify({"bucketlists": BucketlistItem.list_bucketlists(
             args,
