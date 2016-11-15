@@ -215,7 +215,7 @@ class BucketlistItem(object):
         """deletes a specified item in a particular bucketlist"""
         item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
         if not item:
-            raise IndexError("No such bucketlist")
+            raise IndexError("No such item")
         if item.bucketlists.created_by != user_id:
             raise Exception("Not the user")
         db.session.delete(item)

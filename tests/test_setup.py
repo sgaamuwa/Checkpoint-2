@@ -13,16 +13,29 @@ class TestBaseCase(unittest.TestCase):
         db.create_all()
 
         data = {"username": "samuel", "password": "pass123"}
+        data2 = {"username": "arnold", "password": "pass123"}
         # register the User
         self.app.post(
             "/auth/register",
             data=json.dumps(data),
             content_type="application/json"
         )
+        # register the second User
+        self.app.post(
+            "/auth/register",
+            data=json.dumps(data2),
+            content_type="application/json"
+        )
         # log in the user
         self.app.post(
             "/auth/login",
             data=json.dumps(data),
+            content_type="application/json"
+        )
+        # log in the second user
+        self.app.post(
+            "/auth/login",
+            data=json.dumps(data2),
             content_type="application/json"
         )
         # get a token
@@ -36,6 +49,17 @@ class TestBaseCase(unittest.TestCase):
         self.headers = {
             "Authorization": "Bearer " + token
         }
+        # get a token for second user
+        headers = {
+            'Authorization': 'Basic ' + 'YXJub2xkOnBhc3MxMjM='
+        }
+
+        response = self.app.get("/token", headers=headers)
+        token = json.loads(response.get_data().decode())["token"]
+
+        self.headers2 = {
+            "Authorization": "Bearer " + token
+        }
         # create a test bucketlist
         bucketlist = {"name": "New Bucketlist"}
         self.app.post(
@@ -44,6 +68,14 @@ class TestBaseCase(unittest.TestCase):
             content_type="application/json",
             headers=self.headers
             )
+        # create a test bucketlist for second user
+        bucketlist = {"name": "Newer Bucketlist"}
+        self.app.post(
+            "/bucketlists/",
+            data=json.dumps(bucketlist),
+            content_type="application/json",
+            headers=self.headers2
+            )
         # create a test Item
         item = {"name": "item1"}
         response = self.app.post(
@@ -51,6 +83,13 @@ class TestBaseCase(unittest.TestCase):
             data=json.dumps(item),
             content_type="application/json",
             headers=self.headers)
+        # create a test Item for second user
+        item = {"name": "item3"}
+        response = self.app.post(
+            "/bucketlists/1/items/",
+            data=json.dumps(item),
+            content_type="application/json",
+            headers=self.headers2)
 
     def tearDown(self):
         db.session.remove()

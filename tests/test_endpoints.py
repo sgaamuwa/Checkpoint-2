@@ -192,6 +192,13 @@ class EndpointTests(TestBaseCase):
         self.assertEqual(response.status_code, 401)
         data = response.get_data().decode("utf-8")
         self.assertIn("Unauthorized Access", data)
+        # test get bucketlist not owned
+        response = self.app.get(
+            "/bucketlists/1",
+            headers=self.headers2)
+        self.assertEqual(response.status_code, 401)
+        data = response.get_data().decode("utf-8")
+        self.assertIn("Unauthorized access for bucketlist", data)
 
     def test_update_bucketlist(self):
         """tests that bucketlists are updated in the system"""
@@ -231,9 +238,28 @@ class EndpointTests(TestBaseCase):
         self.assertEqual(response.status_code, 401)
         data = response.get_data().decode("utf-8")
         self.assertIn("Unauthorized Access", data)
+        # test can't update bucketlist not owned
+        update_information = {"name": "new new name"}
+        response = self.app.put(
+            "/bucketlists/1",
+            data=json.dumps(update_information),
+            content_type="application/json",
+            headers=self.headers2
+            )
+        self.assertEqual(response.status_code, 401)
+        data = response.get_data().decode("utf-8")
+        self.assertIn("Unauthorized access for bucketlist", data)
 
     def test_delete_bucketlist(self):
         """tests that bucketlists are deleted from the system"""
+        # test cant delete bucketlist not owned
+        response = self.app.delete(
+            "/bucketlists/1",
+            headers=self.headers2
+            )
+        self.assertEqual(response.status_code, 401)
+        data = response.get_data().decode("utf-8")
+        self.assertIn("Unauthorized access for bucketlist", data)
         # test with a correct id
         response = self.app.delete(
             "/bucketlists/1",
@@ -249,6 +275,13 @@ class EndpointTests(TestBaseCase):
         self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
         self.assertIn("Resource not found", data)
+        # test cant delete without token
+        response = self.app.delete(
+            "/bucketlists/1",
+            )
+        self.assertEqual(response.status_code, 401)
+        data = response.get_data().decode("utf-8")
+        self.assertIn("Unauthorized Access", data)
 
     def test_create_item(self):
         """tests that items are created in the system"""
@@ -271,10 +304,29 @@ class EndpointTests(TestBaseCase):
         self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
         self.assertIn("Resource not found", data)
+        # test cant create if not owner
+        item = {"name": "item4"}
+        response = self.app.post(
+            "/bucketlists/1/items/",
+            data=json.dumps(item),
+            content_type="application/json",
+            headers=self.headers2)
+        self.assertEqual(response.status_code, 401)
+        data = response.get_data().decode("utf-8")
+        self.assertIn("Unauthorized access for bucketlist", data)
 
     def test_update_item(self):
-        # test with all correct ids
         update_info = {"done": "true"}
+        # test cant update if not owner
+        response = self.app.put(
+            "/bucketlists/1/items/1",
+            data=json.dumps(update_info),
+            content_type="application/json",
+            headers=self.headers2)
+        self.assertEqual(response.status_code, 401)
+        data = response.get_data().decode("utf-8")
+        self.assertIn("Unauthorized access for bucketlist", data)
+        # test with all correct ids
         response = self.app.put(
             "/bucketlists/1/items/1",
             data=json.dumps(update_info),
@@ -312,6 +364,13 @@ class EndpointTests(TestBaseCase):
         self.assertIn("Resource not found", data)
 
     def test_delete_item(self):
+        # test cant delete if not owner
+        response = self.app.delete(
+            "/bucketlists/1/items/1",
+            headers=self.headers2)
+        self.assertEqual(response.status_code, 401)
+        data = response.get_data().decode("utf-8")
+        self.assertIn("Unauthorized access for bucketlist", data)
         # test with all correct ids
         response = self.app.delete(
             "/bucketlists/1/items/1",
