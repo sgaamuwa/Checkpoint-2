@@ -34,16 +34,6 @@ class Login(Resource):
 class Bucketlists(Resource):
     decorators = [auth_token.login_required]
 
-    def post(self):
-        """end point for creating Bucketlist
-        returns the json of the bucketlist created
-        """
-        return jsonify({
-            "response": BucketlistItem.create_bucketlist(
-                request.json,
-                g.user.id)
-            })
-
     def get(self):
         """end point for listing Bucketlists in the api
         returns all the bucketlists and their items in the database
@@ -56,6 +46,16 @@ class Bucketlists(Resource):
         return jsonify({"bucketlists": BucketlistItem.list_bucketlists(
             args,
             g.user.id)
+            })
+
+    def post(self):
+        """end point for creating Bucketlist
+        returns the json of the bucketlist created
+        """
+        return jsonify({
+            "response": BucketlistItem.create_bucketlist(
+                request.json,
+                g.user.id)
             })
 
 
