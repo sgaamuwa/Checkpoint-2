@@ -86,6 +86,8 @@ class BucketlistItem(object):
     def get_bucketlist(data, user_id):
         """returns a particular bucket list and its items"""
         bucketlist = Bucketlist.query.filter_by(id=data).first()
+        if not bucketlist:
+            raise IndexError("No such bucketlist")
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
         item_list = []
@@ -115,6 +117,8 @@ class BucketlistItem(object):
         elif len(data["name"]) < 2:
             return {"message": "Bucketlist name is too short"}
         bucketlist = Bucketlist.query.filter_by(id=id).first()
+        if not bucketlist:
+            raise IndexError("No such bucketlist")
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
         bucketlist.name = data["name"]
@@ -133,6 +137,8 @@ class BucketlistItem(object):
     def delete_bucketlist(id, user_id):
         """deletes a particular bucketlist from the database"""
         bucketlist = Bucketlist.query.filter_by(id=id).first()
+        if not bucketlist:
+            raise IndexError("No such bucketlist")
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
         Bucketlist.query.filter_by(id=id).delete()
@@ -144,6 +150,8 @@ class BucketlistItem(object):
     def create_item(data, bucketlist_id, user_id):
         """creates an item in a particular bucketlist"""
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
+        if not bucketlist:
+            raise IndexError("No such bucketlist")
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
         if len(data["name"]) == 0:
@@ -180,6 +188,8 @@ class BucketlistItem(object):
         if data["done"] != ("true" or "false"):
             return {"message": "done is either true or false"}
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
+        if not bucketlist:
+            raise IndexError("No such bucketlist")
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
         item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
@@ -204,6 +214,8 @@ class BucketlistItem(object):
     def delete_item(id, bucketlist_id, user_id):
         """deletes a specified item in a particular bucketlist"""
         item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
+        if not item:
+            raise IndexError("No such bucketlist")
         if item.bucketlists.created_by != user_id:
             raise Exception("Not the user")
         db.session.delete(item)

@@ -88,7 +88,7 @@ class EndpointTests(TestBaseCase):
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
         self.assertIn('password is too short', data)
-        # test registration with user in system 
+        # test registration with user in system
         register_data = {"username": "Samuel", "password": "incorrect"}
         response = self.app.post(
             '/auth/register',
@@ -182,9 +182,9 @@ class EndpointTests(TestBaseCase):
         response = self.app.get(
             "/bucketlists/48",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
         # test cant lists without token
         response = self.app.get(
             "/bucketlists/1",
@@ -246,9 +246,9 @@ class EndpointTests(TestBaseCase):
         response = self.app.delete(
             "/bucketlists/43",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
 
     def test_create_item(self):
         """tests that items are created in the system"""
@@ -268,9 +268,9 @@ class EndpointTests(TestBaseCase):
             data=json.dumps(item),
             content_type="application/json",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
 
     def test_update_item(self):
         # test with all correct ids
@@ -298,18 +298,18 @@ class EndpointTests(TestBaseCase):
             data=json.dumps(update_info),
             content_type="application/json",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
         # test with incorrect ids
         response = self.app.put(
             "/bucketlists/43/items/43",
             data=json.dumps(update_info),
             content_type="application/json",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
 
     def test_delete_item(self):
         # test with all correct ids
@@ -323,20 +323,20 @@ class EndpointTests(TestBaseCase):
         response = self.app.delete(
             "/bucketlists/1/items/43",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
         # test with incorrect bucketlist id, correct item id
         response = self.app.delete(
             "/bucketlists/43/items/1",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
         # test with incorrect ids
         response = self.app.delete(
             "/bucketlists/43/items/43",
             headers=self.headers)
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 404)
         data = response.get_data().decode("utf-8")
-        self.assertIn("Unauthorized access", data)
+        self.assertIn("Resource not found", data)
