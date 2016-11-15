@@ -1,5 +1,5 @@
-from models import User
-from app import db
+from app.models import User
+from app.app import db
 
 
 class Authentication(object):
