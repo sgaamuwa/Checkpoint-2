@@ -1,6 +1,7 @@
 alembic==0.8.8
 aniso8601==1.2.0
 click==6.6
+coveralls==1.1
 coverage==4.2
 flake8==3.0.4
 Flask==0.11.1
