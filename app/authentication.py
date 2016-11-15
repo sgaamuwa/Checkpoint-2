@@ -14,6 +14,14 @@ class Authentication(object):
 
     def register_user(user_data):
         """registers and adds new users the database"""
+        if len(user_data['username']) == 0:
+            return "username required"
+        elif len(user_data['username']) < 4:
+            return "username is too short"
+        elif len(user_data['password']) == 0:
+            return "password required"
+        elif len(user_data['password']) < 4:
+            return "password is too short"
         user = User(username=user_data['username'])
         # give the user password a hash value and store it
         user.set_password(password=user_data['password'])
@@ -36,6 +44,10 @@ class Authentication(object):
         """logs in users to the System
         returns an error if the credentials are not valid
         """
+        if len(user_data['username']) == 0:
+            return "username required"
+        elif len(user_data['password']) == 0:
+            return "password required"
         user = User.query.filter_by(username=user_data['username']).first()
         # check if the user and password exist and are right
         if user and user.verify_password(user_data['password']):

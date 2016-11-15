@@ -16,6 +16,14 @@ class BucketlistItem(object):
 
     def create_bucketlist(data, user_id):
         """creates a bucketlist using information sent using POST"""
+        if len(data["name"]) == 0:
+            return {"message": "Enter a name for bucketlist"}
+        elif len(data["name"]) < 2:
+            return {"message": "Bucketlist name is too short"}
+        result = Bucketlist.query.all()
+        bl_names = [blists.name for blists in result]
+        if data["name"] in bl_names:
+            return {"message": "bucketlist already exists"}
         user = User.query.filter_by(id=user_id).first()
         bucketlist = Bucketlist(
             name=data["name"],
@@ -102,6 +110,10 @@ class BucketlistItem(object):
 
     def update_bucketlist(data, id, user_id):
         """modifies information for a given bucketlist in the database"""
+        if len(data["name"]) == 0:
+            return {"message": "Enter a name for bucketlist"}
+        elif len(data["name"]) < 2:
+            return {"message": "Bucketlist name is too short"}
         bucketlist = Bucketlist.query.filter_by(id=id).first()
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
@@ -134,6 +146,14 @@ class BucketlistItem(object):
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
+        if len(data["name"]) == 0:
+            return {"message": "Enter a name for bucketlist item"}
+        elif len(data["name"]) < 2:
+            return {"message": "Item name is too short"}
+        result = Item.query.all()
+        item_names = [items.name for items in result]
+        if data["name"] in item_names:
+            return {"message": "item already exists"}
         item = Item(
             name=data["name"],
             date_created=datetime.now(),
@@ -157,6 +177,8 @@ class BucketlistItem(object):
 
     def update_item(data, id, bucketlist_id, user_id):
         """updates a specified item in a particular bucketlist"""
+        if data["done"] != ("true" or "false"):
+            return {"message": "done is either true or false"}
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
