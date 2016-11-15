@@ -78,7 +78,7 @@ class BucketlistTest(TestBaseCase):
         # assert that there are no items in the database
         self.assertEqual(Item.query.count(), 1)
         # create one item
-        BucketlistItem.create_item({"name": "item1"}, 2, 1)
+        BucketlistItem.create_item({"name": "item2"}, 2, 1)
         # assert that there is now one item in the database
         self.assertEqual(Item.query.count(), 2)
 
@@ -86,7 +86,7 @@ class BucketlistTest(TestBaseCase):
         """tests that a particular bucketlist item can be updated"""
         # create bucketlist and Item
         BucketlistItem.create_bucketlist({"name": "new"}, 1)
-        BucketlistItem.create_item({"name": "item1"}, 2, 1)
+        BucketlistItem.create_item({"name": "item2"}, 2, 1)
         # assert that the item is not done
         item = Item.query.filter_by(id=2).first()
         self.assertEqual(item.done, False)
@@ -100,7 +100,7 @@ class BucketlistTest(TestBaseCase):
         """tests that a particular bucketlist item can be deleted"""
         # create a bucketlist and a bucketlist item
         BucketlistItem.create_bucketlist({"name": "new"}, 1)
-        BucketlistItem.create_item({"name": "item1"}, 2, 1)
+        BucketlistItem.create_item({"name": "item2"}, 2, 1)
         # assert that there is one item in the database
         self.assertEqual(Item.query.count(), 2)
         # delete that item
