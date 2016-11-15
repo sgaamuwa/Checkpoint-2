@@ -1,5 +1,5 @@
-from app.authentication import Authentication
-from app.bucketlist import BucketlistItem
+from authentication import Authentication
+from bucketlist import BucketlistItem
 from flask import jsonify, request, g, session
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_restful import Resource, reqparse

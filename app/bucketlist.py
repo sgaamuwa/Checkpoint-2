@@ -1,6 +1,6 @@
 from datetime import datetime
-from app.models import Bucketlist, Item, User
-from app.app import db
+from models import Bucketlist, Item, User
+from app import db
 
 
 class BucketlistItem(object):
