@@ -14,11 +14,11 @@ class Authentication(object):
 
     def register_user(user_data):
         """registers and adds new users the database"""
-        if len(user_data['username']) == 0:
+        if len(user_data['username'].strip()) == 0:
             return "username required"
         elif len(user_data['username']) < 4:
             return "username is too short"
-        elif len(user_data['password']) == 0:
+        elif len(user_data['password'].strip()) == 0:
             return "password required"
         elif len(user_data['password']) < 4:
             return "password is too short"
@@ -44,23 +44,16 @@ class Authentication(object):
         """logs in users to the System
         returns an error if the credentials are not valid
         """
-        if len(user_data['username']) == 0:
+        if len(user_data['username'].strip()) == 0:
             return "username required"
-        elif len(user_data['password']) == 0:
+        elif len(user_data['password'].strip()) == 0:
             return "password required"
         user = User.query.filter_by(username=user_data['username']).first()
         # check if the user and password exist and are right
         if user and user.verify_password(user_data['password']):
-            return True
+            return user
         else:
-            return False
-
-    def verify_user(username, password):
-        """checks if a user exists and verifies their password"""
-        user = User.query.filter_by(username=username).first()
-        if not user or not user.verify_password(password):
             return None
-        return user
 
     def verify_token(token):
         """verifies tokens used in the system for access"""

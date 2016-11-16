@@ -26,9 +26,18 @@ class Login(Resource):
         """end point for logging in a UserWarning
         returns true or false depending on success of log in
         """
-        result = Authentication.login_user(request.json)
-        session['logged_in'] = True
-        return jsonify({'result': result})
+        g.user = Authentication.login_user(request.json)
+        if g.user is None:
+            return ({"result": False})
+        elif type(g.user) is str:
+            return ({"result": g.user})
+        else:
+            result = True
+            session['logged_in'] = True
+            return jsonify({
+                'result': result,
+                'token': g.user.generate_auth_token()
+            })
 
 
 class Bucketlists(Resource):
@@ -196,16 +205,6 @@ class Item(Resource):
             return response
 
 
-class Token(Resource):
-    decorators = [auth.login_required]
-
-    def get(self):
-        """gets a token for the logged in user"""
-        response = jsonify({'token': g.user.generate_auth_token()})
-        response.status_code = 200
-        return response
-
-
 @auth_token.verify_token
 def verify_auth_token(token):
     """verifies the token used to access the api"""
@@ -215,12 +214,3 @@ def verify_auth_token(token):
     else:
         return False
 
-
-@auth.verify_password
-def verify_password(username, password):
-    """verifies the username and password for logging in to the system"""
-    if Authentication.verify_user(username, password) is not None:
-        g.user = Authentication.verify_user(username, password)
-        return True
-    else:
-        return False
