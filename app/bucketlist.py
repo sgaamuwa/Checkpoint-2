@@ -43,7 +43,7 @@ class BucketlistItem(object):
         db.session.close()
         return new_entry
 
-    def list_bucketlists(data, user_id):
+    def list_bucketlists(data, user_id, url_root):
         """lists all the bucketlists that are in the database"""
         page = data.get("page", 1)
         limit = data.get("limit", 20)
@@ -81,6 +81,17 @@ class BucketlistItem(object):
                 "created_by": bucketlist.created_by
             }
             bucketlist_list[bucketlist.name] = bucketlist_dict
+            bucketlist_list["pages"] = bucketlists.pages
+        if bucketlists.has_next:
+            bucketlist_list["next_page"] = str(url_root)+"/bucketlists?limit="+ \
+                str(limit) + "&page=" + str(bucketlists.next_num)
+        else:
+            bucketlist_list["next_page_number"] = "No next page"
+        if bucketlists.has_prev:
+            bucketlist_list["previous_page"] = str(url_root)+"/bucketlists?limit="+ \
+                str(limit) + "&page=" + str(bucketlists.prev_num)
+        else:
+            bucketlist_list["previous_page_number"] = "No previous page"
         return bucketlist_list
 
     def get_bucketlist(data, user_id):

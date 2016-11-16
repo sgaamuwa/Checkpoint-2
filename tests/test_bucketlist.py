@@ -23,19 +23,32 @@ class BucketlistTest(TestBaseCase):
         data_set2 = {"q": "o", "page": 1, "limit": 2}
         data_set3 = {"q": None, "page": 1, "limit": 3}
         data_set4 = {"q": "o", "page": 1, "limit": 1}
-        self.assertEqual(len(BucketlistItem.list_bucketlists(data_set1, 1)), 2)
+        url_root = {"http://127.0.0.1:5000"}
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists(data_set1, 1, url_root)),
+            5)
         # assert that there are now two in the list
         BucketlistItem.create_bucketlist({"name": "blood"}, 1)
-        self.assertEqual(len(BucketlistItem.list_bucketlists(data_set1, 1)), 3)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists(data_set1, 1, url_root)),
+            6)
         # assert that there are now three in the list
         BucketlistItem.create_bucketlist({"name": "hounds"}, 1)
-        self.assertEqual(len(BucketlistItem.list_bucketlists(data_set1, 1)), 4)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists(data_set1, 1, url_root)),
+            7)
         # assert can search using substrings
-        self.assertEqual(len(BucketlistItem.list_bucketlists(data_set2, 1)), 2)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists(data_set2, 1, url_root)),
+            5)
         # assert limit in listing bucketlists
-        self.assertEqual(len(BucketlistItem.list_bucketlists(data_set3, 1)), 3)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists(data_set3, 1, url_root)),
+            6)
         # assert limit works for searching with substring
-        self.assertEqual(len(BucketlistItem.list_bucketlists(data_set4, 1)), 1)
+        self.assertEqual(
+            len(BucketlistItem.list_bucketlists(data_set4, 1, url_root)),
+            4)
 
     def test_get_bucketlist(self):
         """tests that a particular bucketlist is retrieved"""

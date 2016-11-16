@@ -54,7 +54,8 @@ class Bucketlists(Resource):
         args = parser.parse_args()
         return jsonify({"bucketlists": BucketlistItem.list_bucketlists(
             args,
-            g.user.id)
+            g.user.id,
+            request.url_root)
             })
 
     def post(self):
