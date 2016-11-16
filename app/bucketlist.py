@@ -16,7 +16,7 @@ class BucketlistItem(object):
 
     def create_bucketlist(data, user_id):
         """creates a bucketlist using information sent using POST"""
-        if len(data["name"]) == 0:
+        if len(data["name"].strip()) == 0:
             return {"message": "Enter a name for bucketlist"}
         elif len(data["name"]) < 2:
             return {"message": "Bucketlist name is too short"}
@@ -112,7 +112,7 @@ class BucketlistItem(object):
 
     def update_bucketlist(data, id, user_id):
         """modifies information for a given bucketlist in the database"""
-        if len(data["name"]) == 0:
+        if len(data["name"].strip()) == 0:
             return {"message": "Enter a name for bucketlist"}
         elif len(data["name"]) < 2:
             return {"message": "Bucketlist name is too short"}
@@ -141,6 +141,8 @@ class BucketlistItem(object):
             raise IndexError("No such bucketlist")
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
+        for item in bucketlist.items:
+            db.session.delete(item)
         Bucketlist.query.filter_by(id=id).delete()
         db.session.commit()
         db.session.close()
@@ -154,7 +156,7 @@ class BucketlistItem(object):
             raise IndexError("No such bucketlist")
         if bucketlist.created_by != user_id:
             raise Exception("Not the user")
-        if len(data["name"]) == 0:
+        if len(data["name"].strip()) == 0:
             return {"message": "Enter a name for bucketlist item"}
         elif len(data["name"]) < 2:
             return {"message": "Item name is too short"}
@@ -185,18 +187,27 @@ class BucketlistItem(object):
 
     def update_item(data, id, bucketlist_id, user_id):
         """updates a specified item in a particular bucketlist"""
-        if data["done"] != ("true" or "false"):
-            return {"message": "done is either true or false"}
         bucketlist = Bucketlist.query.filter_by(id=bucketlist_id).first()
         if not bucketlist:
             raise IndexError("No such bucketlist")
-        if bucketlist.created_by != user_id:
+        if bucketlist.created_by is not user_id:
+            print(bucketlist.created_by)
+            print(user_id)
             raise Exception("Not the user")
         item = Item.query.filter_by(id=id, bucketlist=bucketlist_id).first()
-        if data["done"] == "true":
-            item.done = True
-        else:
-            item.done = False
+        if "name" in data.keys():
+            if len(data["name"].strip()) == 0:
+                return {"message": "Enter a name for bucketlist item"}
+            elif len(data["name"]) < 2:
+                return {"message": "Item name is too short"}
+            item.name = data["name"]
+        if "done" in data.keys():
+            if data["done"] != ("true" or "false"):
+                return {"message": "done is either true or false"}
+            if data["done"] == "true":
+                item.done = True
+            else:
+                item.done = False
         item.date_modified = datetime.now()
         bucketlist.date_modified = datetime.now()
         db.session.commit()
