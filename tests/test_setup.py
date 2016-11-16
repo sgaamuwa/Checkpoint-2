@@ -27,34 +27,25 @@ class TestBaseCase(unittest.TestCase):
             content_type="application/json"
         )
         # log in the user
-        self.app.post(
+        response = self.app.post(
             "/auth/login",
             data=json.dumps(data),
             content_type="application/json"
         )
-        # log in the second user
-        self.app.post(
-            "/auth/login",
-            data=json.dumps(data2),
-            content_type="application/json"
-        )
-        # get a token
-        headers = {
-            'Authorization': 'Basic ' + 'c2FtdWVsOnBhc3MxMjM='
-        }
 
-        response = self.app.get("/token", headers=headers)
         token = json.loads(response.get_data().decode())["token"]
 
         self.headers = {
             "Authorization": "Bearer " + token
         }
-        # get a token for second user
-        headers = {
-            'Authorization': 'Basic ' + 'YXJub2xkOnBhc3MxMjM='
-        }
-
-        response = self.app.get("/token", headers=headers)
+        
+        # log in the second user
+        response = self.app.post(
+            "/auth/login",
+            data=json.dumps(data2),
+            content_type="application/json"
+        )
+        
         token = json.loads(response.get_data().decode())["token"]
 
         self.headers2 = {

@@ -15,7 +15,7 @@ class EndpointTests(TestBaseCase):
             content_type="application/json")
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
-        self.assertEqual(data, '{\n  "result": true\n}\n')
+        self.assertIn('"result": true', data)
 
     def test_invalid_login(self):
         """tests that invalid login information not logged in"""
@@ -26,7 +26,7 @@ class EndpointTests(TestBaseCase):
             content_type="application/json")
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
-        self.assertEqual(data, '{\n  "result": false\n}\n')
+        self.assertIn('{"result": false}', data)
         # test with no data
         login_data = {"username": "", "password": ""}
         response = self.app.post(
@@ -35,7 +35,7 @@ class EndpointTests(TestBaseCase):
             content_type="application/json")
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
-        self.assertEqual(data, '{\n  "result": "username required"\n}\n')
+        self.assertEqual(data, '{"result": "username required"}\n')
 
     def test_register_user(self):
         """tests that register responses with correct data"""
@@ -316,7 +316,7 @@ class EndpointTests(TestBaseCase):
         self.assertIn("Unauthorized access for bucketlist", data)
 
     def test_update_item(self):
-        update_info = {"done": "true"}
+        update_info = {"name": "supernew", "done": "true"}
         # test cant update if not owner
         response = self.app.put(
             "/bucketlists/1/items/1",
@@ -335,6 +335,7 @@ class EndpointTests(TestBaseCase):
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
         self.assertIn("true", data)
+        self.assertIn("supernew", data)
         # test with correct bucketlist id, incorrect item id
         response = self.app.put(
             "/bucketlists/1/items/43",
