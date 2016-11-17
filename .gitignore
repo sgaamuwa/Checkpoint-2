@@ -10,3 +10,6 @@ __pycache__/
 
 # Tox
 .tox
+
+# Bash profile
+.bash_profile
