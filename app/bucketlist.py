@@ -80,16 +80,18 @@ class BucketlistItem(object):
                 "date_modified": bucketlist.date_modified,
                 "created_by": bucketlist.created_by
             }
-            bucketlist_list[bucketlist.name] = bucketlist_dict
+            bucketlist_list[str(bucketlist.id)] = bucketlist_dict
             bucketlist_list["pages"] = bucketlists.pages
         if bucketlists.has_next:
-            bucketlist_list["next_page"] = str(url_root)+"/bucketlists?limit="+ \
-                str(limit) + "&page=" + str(bucketlists.next_num)
+            bucketlist_list["next_page"] = str(url_root) + \
+                "/bucketlists?limit=" + str(limit) + "&page=" + \
+                str(bucketlists.next_num)
         else:
             bucketlist_list["next_page_number"] = "No next page"
         if bucketlists.has_prev:
-            bucketlist_list["previous_page"] = str(url_root)+"/bucketlists?limit="+ \
-                str(limit) + "&page=" + str(bucketlists.prev_num)
+            bucketlist_list["previous_page"] = str(url_root) + \
+                "/bucketlists?limit=" + str(limit) + "&page=" + \
+                str(bucketlists.prev_num)
         else:
             bucketlist_list["previous_page_number"] = "No previous page"
         return bucketlist_list
