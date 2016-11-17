@@ -15,7 +15,7 @@ class EndpointTests(TestBaseCase):
             content_type="application/json")
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
-        self.assertIn('"result": true', data)
+        self.assertIn('Login Successful', data)
 
     def test_invalid_login(self):
         """tests that invalid login information not logged in"""
@@ -26,7 +26,7 @@ class EndpointTests(TestBaseCase):
             content_type="application/json")
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
-        self.assertIn('{"result": false}', data)
+        self.assertIn('Please enter the right credentials', data)
         # test with no data
         login_data = {"username": "", "password": ""}
         response = self.app.post(
@@ -47,7 +47,7 @@ class EndpointTests(TestBaseCase):
             )
         self.assertEqual(response.status_code, 200)
         data = response.get_data().decode("utf-8")
-        self.assertIn('{\n  "result": "success"\n}\n', data)
+        self.assertIn('User successfully registered', data)
         # test with no data
         register_data = {"username": "", "password": ""}
         response = self.app.post(

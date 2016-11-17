@@ -1,5 +1,5 @@
 from app.authentication import Authentication
-from app.bucketlist import BucketlistItem
+from app.bucketlist import BucketList, BucketlistItem
 from flask import jsonify, request, g, session
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_restful import Resource, reqparse
@@ -28,15 +28,14 @@ class Login(Resource):
         """
         g.user = Authentication.login_user(request.json)
         if g.user is None:
-            return ({"result": False})
+            return ({"result": "Please enter the right credentials"})
         elif type(g.user) is str:
             return ({"result": g.user})
         else:
-            result = True
             session['logged_in'] = True
             return jsonify({
-                'result': result,
-                'token': g.user.generate_auth_token()
+                'result': 'Login Successful',
+                'token': 'Bearer ' + g.user.generate_auth_token()
             })
 
 
@@ -52,7 +51,7 @@ class Bucketlists(Resource):
         parser.add_argument("page", type=int, help="page of results")
         parser.add_argument("limit", type=int, help="limit for results")
         args = parser.parse_args()
-        return jsonify({"bucketlists": BucketlistItem.list_bucketlists(
+        return jsonify({"bucketlists": BucketList.list_bucketlists(
             args,
             g.user.id,
             request.url_root)
@@ -63,7 +62,7 @@ class Bucketlists(Resource):
         returns the json of the bucketlist created
         """
         return jsonify({
-            "response": BucketlistItem.create_bucketlist(
+            "response": BucketList.create_bucketlist(
                 request.json,
                 g.user.id)
             })
@@ -78,7 +77,7 @@ class Bucketlist(Resource):
         """
         try:
             return jsonify({
-                "response": BucketlistItem.get_bucketlist(id, g.user.id)
+                "response": BucketList.get_bucketlist(id, g.user.id)
                 })
         except IndexError:
             response = jsonify({
@@ -99,7 +98,7 @@ class Bucketlist(Resource):
         """
         try:
             return jsonify({
-                "response": BucketlistItem.update_bucketlist(
+                "response": BucketList.update_bucketlist(
                     request.json,
                     id,
                     g.user.id)
@@ -122,7 +121,7 @@ class Bucketlist(Resource):
         returns a message that the delete was successful
         """
         try:
-            return jsonify(BucketlistItem.delete_bucketlist(id, g.user.id))
+            return jsonify(BucketList.delete_bucketlist(id, g.user.id))
         except IndexError:
             response = jsonify({
                 "message": "Resource not found"
@@ -214,4 +213,3 @@ def verify_auth_token(token):
         return True
     else:
         return False
-

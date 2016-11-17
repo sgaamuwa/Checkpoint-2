@@ -36,20 +36,20 @@ class TestBaseCase(unittest.TestCase):
         token = json.loads(response.get_data().decode())["token"]
 
         self.headers = {
-            "Authorization": "Bearer " + token
+            "Authorization": token
         }
-        
+
         # log in the second user
         response = self.app.post(
             "/auth/login",
             data=json.dumps(data2),
             content_type="application/json"
         )
-        
+
         token = json.loads(response.get_data().decode())["token"]
 
         self.headers2 = {
-            "Authorization": "Bearer " + token
+            "Authorization": token
         }
         # create a test bucketlist
         bucketlist = {"name": "New Bucketlist"}

@@ -30,11 +30,11 @@ class Authentication(object):
         if user_data["username"] in usernames:
             return "username already exists"
         if user in User.query.filter_by(username=user_data['username']):
-            status = "success"
+            status = "User successfully registered"
         try:
             db.session.add(user)
             db.session.commit()
-            status = 'success'
+            status = 'User successfully registered'
         except:
             status = 'this user is already registered'
         db.session.close()

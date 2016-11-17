@@ -3,15 +3,12 @@ from app.models import Bucketlist, Item, User
 from app.app import db
 
 
-class BucketlistItem(object):
+class BucketList(object):
     """BucketList class
 
-    The bucket list class has methods for managing the bucketlists and items
+    The bucket list class has methods for managing the bucketlists
     Bucketlist enables one to create, list, return, update and delete
     bucketlists
-
-    Each bucketlist has list items that can be created, updated and deleted
-    using the bucket list class
     """
 
     def create_bucketlist(data, user_id):
@@ -161,6 +158,15 @@ class BucketlistItem(object):
         db.session.close()
 
         return {"message": "Bucketlist ID:{} deleted".format(id)}
+
+
+class BucketlistItem(object):
+    """BucketlistItem class
+
+    The BucketlistItem class has methods for managing the bucketlist items
+    BucketlistItem enables one to create, list, return, update and delete
+    bucketlist items
+    """
 
     def create_item(data, bucketlist_id, user_id):
         """creates an item in a particular bucketlist"""

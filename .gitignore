@@ -3,23 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Distribution / packaging
-.Python
-env/
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# dotenv
-.env
-
-# virtualenv
-.venv/
-venv/
-ENV/
-
 # Databases
 *.db
 
 *.DS_Store
+
+# Tox
+.tox
