@@ -25,14 +25,14 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
     def generate_auth_token(self, expires_in=1800):
-        s = Serializer(app.config["SECRET_KEY"], expires_in=expires_in)
-        return s.dumps({"id": self.id}).decode("utf-8")
+        signature = Serializer(app.config["SECRET_KEY"], expires_in=expires_in)
+        return signature.dumps({"id": self.id}).decode("utf-8")
 
     @staticmethod
     def verify_auth_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
+        signature = Serializer(app.config['SECRET_KEY'])
         try:
-            data = s.loads(token)
+            data = signature.loads(token)
         except:
             return None
         return User.query.get(data['id'])
